@@ -1,5 +1,0 @@
-#!/bin/bash
-# script further illustrating storing numbers in variables
-export POWER=42784
-export DIVIDE=32
-echo the result of power divided by divide is $(($POWER/$DIVIDE))

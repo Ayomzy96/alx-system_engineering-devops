@@ -1,3 +1,0 @@
-#!/bin/bash
-#this displays all local and environmental/global variables
-set

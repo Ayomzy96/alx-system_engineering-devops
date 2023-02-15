@@ -1,3 +1,0 @@
-#!/bin/bash
-#this display all specified local and global variables on the linux system 
-printenv
