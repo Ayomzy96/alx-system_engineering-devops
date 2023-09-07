@@ -2,7 +2,7 @@ global
 	log /dev/log	local0
 	log /dev/log	local1 notice
 	chroot /var/lib/haproxy
-	stats socket /run/haproxy/admin.sock mode 660 level admin
+	stats socket /run/haproxy/admin.sock mode 660 level admin expose-fd listeners
 	stats timeout 30s
 	user haproxy
 	group haproxy
@@ -33,19 +33,13 @@ defaults
 	errorfile 503 /etc/haproxy/errors/503.http
 	errorfile 504 /etc/haproxy/errors/504.http
 
-frontend  ehoneah-frontend-http
-        bind *:80
-        mode http
-	http-request set-header X-Forwarded-Proto http
-        default_backend ehoneah-backend
+listen	balancer
+	# frontend config settings
+	bind :80
+	bind *:443 ssl crt /etc/letsencrypt/live/www.ruthmarcuss.tech/fullchain.pem
+    http-request redirect scheme https code 301 unless { ssl_fc }
 
-frontend ehoneah-frontend-https
-	bind *:443 ssl crt /etc/haproxy/certs/www.ehoneah.tech.pem
-	http-request set-header X-Forwarded-Proto https
-	http-request redirect scheme https code 301 unless { ssl_fc }
-	default_backend ehoneah-backend
-
-backend ehoneah-backend
-        balance roundrobin
-        server 63210-web-01 100.25.19.204:80 check
-        server 63210-web-02 54.157.159.85:80 check
+	# backend config settings
+	balance roundrobin
+	server 61590-web-01 18.204.7.186:80 check
+	server 61590-web-02 3.83.245.14:80 check
